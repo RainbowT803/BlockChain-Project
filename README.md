@@ -1,4 +1,5 @@
-PROJECT OVERVIEW
+
+
 This project implements a decentralized second-hand trading platform using blockchain technology. The system consists of a Solidity smart contract that handles the core trading logic and a React-based frontend application that provides user interaction with the contract. The platform enables secure peer-to-peer trading of items with built-in escrow functionality, ensuring that both buyers and sellers are protected throughout the transaction process.
 
 PROJECT STRUCTURE
