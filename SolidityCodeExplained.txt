@@ -1,0 +1,126 @@
+Overview
+This smart contract implements a decentralized listing and bidding system for items on the Ethereum blockchain. It allows sellers to list items for sale and buyers to bid on them, with built-in escrow functionality and delivery tracking.
+
+Contract Architecture
+Data Structures
+solidity
+struct Item {
+    string name;           // Name/description of the item
+    uint listingPrice;     // Minimum price set by seller
+    bool sold;             // Whether item has been sold
+    bool sent;             // Whether seller has sent the item
+    bool received;         // Whether buyer has received the item
+    address seller;        // Address of the seller
+}
+
+struct Buyer {
+    address addr;          // Address of the highest bidder
+    uint biddingPrice;     // Current highest bid
+}
+Functions
+1. Constructor
+solidity
+constructor(string memory _name, uint _listingPrice)
+Purpose: Initializes the listing when the contract is deployed
+
+Parameters:
+
+_name: Name/description of the item
+
+_listingPrice: Minimum price for the item
+
+Initializes:
+
+Sets seller to contract deployer
+
+Resets buyer to zero address
+
+2. Bid Function
+solidity
+function bid() external payable
+Allows users to bid on the item
+
+Requirements:
+
+Bid amount ≥ listing price
+
+Item not already sold
+
+Bid higher than current highest bid
+
+Features:
+
+Automatically refunds previous highest bidder
+
+Updates highest bidder and bid amount
+
+3. End Bidding
+solidity
+function endBidding() external
+Requirements:
+
+Caller must be the seller
+
+At least one bid must exist
+
+Item not already marked as sold
+
+Effect: Marks the item as sold, finalizing the auction
+
+4. Delivery Tracking
+solidity
+function itemSent() external
+function itemRecieved() external
+itemSent():
+
+Can only be called by seller
+
+Requires item to be sold
+
+Marks item as shipped
+
+itemRecieved():
+
+Can only be called by buyer
+
+Requires item to be marked as sent
+
+Marks item as received
+
+Automatically releases payment to seller
+
+5. View Functions
+solidity
+function getName() public view returns(string memory)
+function isSent() public view returns(bool)
+function isRecieved() public view returns(bool)
+function getBuyer() public view returns(address)
+function getPrice() public view returns(uint)
+getName(): Returns item name
+
+isSent(): Returns whether item has been shipped
+
+isRecieved(): Returns whether buyer has received item
+
+getBuyer(): Returns buyer's address (only if sold)
+
+getPrice(): Returns current price (listing price if no bids, otherwise highest bid)
+
+Workflow
+Normal Flow
+Deploy Contract: Seller deploys with item details and minimum price
+
+Bidding Phase: Buyers place bids (must exceed current highest bid)
+
+End Bidding: Seller finalizes auction when ready
+
+Item Sent: Seller marks item as shipped
+
+Item Received: Buyer confirms receipt, triggering payment release
+
+Bid Refund Flow
+When a new higher bid is placed:
+
+Previous bidder automatically gets refunded
+
+New bidder becomes the highest bidder
